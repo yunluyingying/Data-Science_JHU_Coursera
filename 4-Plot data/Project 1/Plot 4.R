@@ -1,0 +1,26 @@
+setwd("~/Documents/Self-learning/DS/Data Science-JHU/4-Plot data")
+data1=unzip("data1.zip")
+data11<-read.table(data1,sep=";",header = T)
+data111<-subset(data11,Date=="1/2/2007"|Date=="2/2/2007")
+time<-paste(data111$Date,data111$Time)
+time<-strptime(time,"%d/%m/%Y %H:%M:%S")
+par(mfrow=c(2,2),mar=c(4,4,2,1))
+#1
+Global_active_power<-as.numeric(as.character(data111$Global_active_power))
+plot(time,Global_active_power,type="l",xlab="",ylab = "Global Active Power (kilowatts)")
+#2
+data111$Voltage<-as.numeric(as.character(data111$Voltage))
+plot(time,data111$Voltage,type="l",xlab="datetime",ylab = "Voltage")
+#3
+data111$Sub_metering_1<-as.numeric(as.character(data111$Sub_metering_1))
+data111$Sub_metering_2<-as.numeric(as.character(data111$Sub_metering_2))
+data111$Sub_metering_3<-as.numeric(as.character(data111$Sub_metering_3))
+plot(time,data111$Sub_metering_1,type="l",xlab="",ylab = "Energy sub metering")
+lines(time,data111$Sub_metering_2,col="red")
+lines(time,data111$Sub_metering_3,col="blue")
+legend("topright",legend=c("Sub_metering_1","Sub_metering_2","Sub_metering_3"),lty=1,lwd=2,bty="n",adj = c(-0.2, 0.6), cex=0.75, col=c("black","red","blue"))
+#4
+Global_reactive_power<-as.numeric(as.character(data111$Global_reactive_power))
+plot(time,Global_reactive_power,type="l",xlab="datatime",ylab = "Global_reactive_power")
+dev.copy(png,"plot4.png",width=480, height=480)
+dev.off()

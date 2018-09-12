@@ -1,0 +1,17 @@
+setwd("~/Documents/Self-learning/DS/Data Science-JHU/4-Plot data/project 2")
+unzip("exdata%2Fdata%2FNEI_data.zip")
+NEI <- readRDS("summarySCC_PM25.rds")
+SCC <- readRDS("Source_Classification_Code.rds")
+NEI2=subset(NEI,fips=="24510")
+NEI4=tapply(NEI2$Emissions,list(NEI2$year,NEI2$type),sum)
+NEI4=as.data.frame(as.table(NEI4)) 
+colnames(NEI4)<-c("Year","Type","Total_Emission")
+library(ggplot2)
+g=ggplot(NEI4,aes(Year,Total_Emission,group=1,color=Type))
+g1=g+geom_point(aes(shape=Type,color=Type),size=3)+geom_line(aes(color=Type,group=Type))
+g2=g1+xlab("Year")+ylab("Total PM2.5 Emissions (Tons)")+ggtitle("Total PM2.5 Emissions in Baltimore from different types")
+print(g2)
+dev.copy(png,"plot3.png",width=480, height=480)
+dev.off()
+#Decreasing: Non-road,Nonpoint,On-road
+#Increasing: point

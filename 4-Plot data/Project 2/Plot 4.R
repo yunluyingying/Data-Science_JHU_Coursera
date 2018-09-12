@@ -1,0 +1,17 @@
+setwd("~/Documents/Self-learning/DS/Data Science-JHU/4-Plot data/project 2")
+unzip("exdata%2Fdata%2FNEI_data.zip")
+NEI <- readRDS("summarySCC_PM25.rds")
+SCC <- readRDS("Source_Classification_Code.rds")
+CombCoal<-grepl("Comb.*Coal",SCC$EI.Sector,ignore.case = TRUE)
+SCC1<-SCC[CombCoal,]
+NEI5<-NEI[NEI$SCC %in% SCC1$SCC,]
+NEI6<-tapply(NEI5$Emissions,list(NEI5$year),sum)
+NEI6=as.data.frame(as.table(NEI6))
+colnames(NEI6)<-c("Year","Total_Emission")
+library(ggplot2)
+g=ggplot(NEI6,aes(Year,Total_Emission))
+g1=g+ylab("Total PM2.5 Emissions (Tons)")+geom_bar(stat="identity")
+g2=g1+ggtitle("Total PM2.5 Emissions from coal combustion-related sources")
+print(g2)
+dev.copy(png,"plot4.png",width=480, height=480)
+dev.off()
