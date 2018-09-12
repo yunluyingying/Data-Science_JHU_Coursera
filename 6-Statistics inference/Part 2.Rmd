@@ -1,0 +1,71 @@
+---
+title: "Course Project-Part 2"
+author: "YYC"
+date: "May 7, 2017"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Overview 
+
+The ToothGrowth data in the R datasets package will be analyzed 
+
+## Load the ToothGrowth data  
+```{r}
+library(datasets)
+a=ToothGrowth
+```
+## ToothGrowth data structure 
+```{r}
+str(a)
+```
+```{r}
+#convert dose from num to factor
+a$dose=as.factor(a$dose)
+```
+```{r}
+str(a)
+```
+```{r}
+head(a)
+```
+## A basic summary of the data 
+```{r}
+summary(a)
+```
+## Some basic exploratory data analyses
+```{r}
+#load ggplot2
+library(ggplot2)
+```
+Visualize the tooth length vs. dose by supp (OJ and VC panels)
+```{r}
+ggplot(data=a,aes(x=dose,y=len))+geom_point(aes(shape=supp,col=supp))+facet_grid(.~supp)+xlab("Dose")+ylab("Tooth length")+ggtitle("Tooth length vs. Dose by supplement")
+```
+Visualize the tooth length vs. supp by dose (OJ and VC panels)
+```{r}
+ggplot(data=a,aes(x=supp,y=len))+geom_point(aes(shape=dose,col=dose))+facet_grid(.~dose)+xlab("Supplement")+ylab("Tooth length")+ggtitle("Tooth length vs. Supplement by dose")
+```
+## Use confidence intervals and/or hypothesis tests to compare tooth growth by supp and dose
+Hypothesis 1_Supplement methods are of no significant impact on tooth length
+```{r}
+t.test(len~supp,data=a)
+```
+As the p-value > 0.05 and the confidence interval of the test contains zero, we can not reject the null hypotheiss. So it was concluded that the supplement methods probably have no impact on tooth length. 
+Hypothesis 2_Dose are of no significant impact on tooth length
+```{r}
+t.test(a$len[a$dose==1],a$len[a$dose==0.5])
+t.test(a$len[a$dose==1],a$len[a$dose==2])
+t.test(a$len[a$dose==0.5],a$len[a$dose==2])
+```
+As all the p-values < 0.05 and the confidence interval of the tests didn't contain zero, we can reject the null hypotheiss. So it was concluded that the dose significantly impacted on tooth length. 
+
+## Conclusions&Assumption 
+
+Assumptions: The tooth of each observation was randomly assigned to each treatment and can represent the whole group. 
+Conclusions: There is no evidence to prove the supplement methods have a significant impact on tooth length while the dose amounts (selected 0.5-2) does. 

@@ -1,0 +1,69 @@
+---
+title: "Course Project-Part 1"
+author: "YYC"
+date: "May 7, 2017"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Overview 
+
+The exponential distribution in R and comparison of it with the Central Limit Theorem will be investigated in this part of project. 
+
+## 1000 times of simulations for exponention distribution 
+```{r}
+set.seed(2017)
+la=0.2
+n=40
+mns=NULL
+for (i in 1:1000) {mns=c(mns,mean(rexp(n,la)))}
+```
+## Compare sample mean and theoretical mean
+```{r}
+# calulate the sample mean 
+samplemean=mean(mns)
+samplemean
+```
+```{r}
+#calulate the theoretical mean 
+theoreticalmean=1/la
+theoreticalmean
+```
+
+## Plot of simulation and comparasion of means 
+
+```{r }
+hist(mns,xlab="mean",main="mean distribution of 1000 simulation of rexp")
+abline(v=samplemean, col="red")
+abline(v=theoreticalmean,col="blue")
+legend("topright",c("samplemean","theoreticalmean"),lty=c(1,1),col = c("red","blue"))
+```
+## Compare sample variance and theoretical variance 
+```{r}
+# calulate the sample variance
+sample_variance=sd(mns)^2
+sample_variance 
+```
+```{r}
+# calulate the theoretical variance
+theoretical_variance=(1/la)^2/n
+theoretical_variance 
+```
+## Distribution of means 
+```{r}
+hist(mns,breaks=30,prob=TRUE,xlab="mean",main="mean distribution of 1000 simulation of rexp",ylim=c(0,0.5))
+lines(density(mns),col="blue",lwd=3)
+normfit<-dnorm(seq(0,9,by=0.1),mean=theoreticalmean,sd=sqrt(theoretical_variance))
+lines(seq(0,9,by=0.1),normfit,lty=2,col="red",lwd=3)
+legend("topright",c("density","normal-fit"),lty=c(1,2),col = c("blue","red"),lwd=3)
+```
+
+
+
+
+
