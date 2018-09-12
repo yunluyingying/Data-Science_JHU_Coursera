@@ -1,0 +1,85 @@
+---
+title: "Course_Project_7"
+author: "YYC"
+date: "May 28, 2017"
+output:
+  word_document: default
+  pdf_document: default
+  html_document: default
+---
+## Executive Summary
+1) From my analysis, the manual transmission is better for MPG.
+2) If we didn't consider other varibles and just model the am with linear regression, the cars with manual transmissions have on average 7.224 miles higher MPG than cars with automatic transmissions. If we consider the influence of major variables cyl, disp, hp and wt, the cars with manual transmissions have on average 1.556 miles higher MPG than cars with automatic transmissions
+
+## Data Exploration 
+```{r}
+# load the dataset and know the data structure and first 6 columns 
+library(datasets)
+data("mtcars")
+str(mtcars)
+```
+```{r}
+head(mtcars)
+```
+
+## Data Visualization 
+```{r,fig.show = 'hide'}
+# plot the pairwise plot 
+pairs(mpg~.,data=mtcars)
+```
+See Figure 1
+```{r,fig.show = 'hide'}
+# plot the mpg~am 
+plot(as.factor(mtcars$am),mtcars$mpg,col=c("blue","red"),xlab="0-automatic transmission, 1-manul transmission", ylab="Miles per gallon (MPG)", main="Transmission type vs mpg")
+```
+See Figure 2
+
+## Statistic Inference_Hypothesis Test 
+Null hypothesis: The transmission type has no significant influence on the mpg. 
+```{r}
+ t.test(mtcars$mpg[mtcars$am==0],mtcars$mpg[mtcars$am==1])
+```
+Conclusion: since the p-value=0.001374<0.05, we can reject the null hypothesis and conclude that there is a significance different between the two transmission types on the mpg. 
+
+## Regression Analysis 
+```{r}
+# simple linear regression 
+fit1=lm(mtcars$mpg~mtcars$am)
+summary(fit1)
+```
+Conclusion: The estimate mean for automatic type is 17.1 MPG while that for manual is 24.392. But the fit1 can only explain ~36% of the variance, so other variables also should be involved and the multivariate linear regression model should be employed. 
+```{r}
+cor(mtcars)[1,]
+```
+Conclusion: The variables cyl, disp, hp and wt can influence the model significantly. 
+```{r}
+# multivariate linear regression 
+fit2=lm(mpg~am+cyl+disp+hp+wt,data=mtcars)
+summary(fit2)
+```
+Conclusion: The new model could explain ~86% of the variance. It could be concluded that the estimate mean for automatic type is 38.2 MPG while that for manual is 1.56 MPG higher than that of automatic type.
+
+## Analysis of the Residuals 
+```{r,fig.show = 'hide'}
+par(mfrow=c(2,2))
+plot(fit2)
+```
+See Figure 3
+Conclusion: 1) The residuals "bounce randomly" around the 0 line. This suggests that the assumption that the relationship is linear is reasonable. 2) The residuals are normally distributed. 3) Scale-Lacation plot shows the residuals are spread equally along the ranges of predictors, indicating the assupmtion of equal variance. 4) There seems to be no influential case considering all the cases are well inside of the Cook's distance lines. 
+
+## Appendix of Figures  
+Figure 1
+```{r,echo=F}
+# plot the pairwise plot 
+pairs(mpg~.,data=mtcars)
+```
+Figure 2 
+```{r, echo=F}
+# plot the mpg~am 
+plot(as.factor(mtcars$am),mtcars$mpg,col=c("blue","red"),xlab="0-automatic transmission, 1-manul transmission", ylab="Miles per gallon (MPG)", main="Transmission type vs mpg")
+```
+Figure 3
+```{r,echo=F}
+par(mfrow=c(2,2))
+plot(fit2)
+```
